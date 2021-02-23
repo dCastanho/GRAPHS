@@ -1,4 +1,4 @@
-package undirected_integer_graph;
+package undirected_graphs.integer_undirected_graph;
 
 import java.util.*;
 
@@ -10,7 +10,7 @@ public class AdjacencyListGraph implements UndirectedGraph {
     private int nVertices;
     private int nEdges;
 
-    AdjacencyListGraph(int nVertices) {
+    public AdjacencyListGraph(int nVertices) {
         adjacencies = new ArrayList<>(nVertices);
         for (int i = 0; i < nVertices; i++)
             adjacencies.add(i, new HashSet<>());
@@ -40,13 +40,13 @@ public class AdjacencyListGraph implements UndirectedGraph {
     }
 
     @Override
-    public Iterator<Integer> adj(int v) throws OutOfBoundsVertexException{
+    public Iterable<Integer> adj(int v) throws OutOfBoundsVertexException{
         if(invalidVertex(v))
             throw new OutOfBoundsVertexException();
-        return adjacencies.get(v).iterator();
+        return adjacencies.get(v);
     }
 
-    private boolean invalidVertex(int v){
+    public boolean invalidVertex(int v){
         return v < 0 || v >= nVertices ;
     }
     

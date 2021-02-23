@@ -1,7 +1,4 @@
-package undirected_graphs.integer_undirected_grapth;
-
-import java.util.Iterator;
-
+package undirected_graphs.integer_undirected_graph;
 import undirected_graphs.exceptions.OutOfBoundsVertexException;
 
 /**
@@ -33,7 +30,12 @@ public interface UndirectedGraph {
      * @param v vertex to get all the adjacent vertices from
      * @return Iterable with the vertices
      */
-    Iterator<Integer> adj(int v) throws OutOfBoundsVertexException;
+    Iterable<Integer> adj(int v) throws OutOfBoundsVertexException;
 
-    
+    /**
+     * Checks whether or not the given vertex is invalid
+     * @param v vertex to check
+     * @return true if it's invalid, false if it's valid
+     */
+    boolean invalidVertex(int v);
 }

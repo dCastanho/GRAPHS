@@ -17,12 +17,17 @@ public class SearchBreadthFirst implements Search{
     }
 
     public int count(int source){
+        markSet.clear();
+        return recoursivecount(source);
+    }
+
+    private int recoursivecount(int source){
         markSet.add(source);
-        int total = 1;
+        int total = 0;
         try {
             for( int v : graph.adj(source))
                 if(!markSet.contains(v))
-                    total += count(v);
+                    total += 1 + recoursivecount(v);
         } catch (Exception e) {
             e.printStackTrace();
         }

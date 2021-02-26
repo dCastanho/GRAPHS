@@ -17,6 +17,12 @@ public class GenAdjacencyListGraph<T> implements GenUndirectedGraph<T> {
         adjacencyList = new HashMap<>();
     }
 
+    public GenAdjacencyListGraph(Map<T,List<T>> aMap){
+        nVertices = 0;
+        nEdges = 0;
+        adjacencyList = aMap;
+    }
+
     @Override
     public boolean addVertex(T vertex) {
         boolean added = true;
@@ -147,11 +153,45 @@ public class GenAdjacencyListGraph<T> implements GenUndirectedGraph<T> {
     }
 
     @Override
-    public Iterable<Iterable<T>> getConnectedComponents() {
-        // TODO Auto-generated method stub
-        return null;
+    public Iterable<GenUndirectedGraph<T>> getConnectedComponents() {
+        List<GenUndirectedGraph<T>> connectedComponents = new LinkedList<>();
+        Set<T> marked = new HashSet<>();
+        for(T v : getVertices())
+            if(!marked.contains(v)){
+                List<T> component = new LinkedList<>();
+                depthFirstComponent(v, component, marked);
+                
+                Map<T,List<T>> graphMap = new HashMap<>(component.size());
+                for(T ele : component)
+                    graphMap.put(ele, adjacencyList.get(ele));
+                GenAdjacencyListGraph<T> compoGraph = new GenAdjacencyListGraph<>(graphMap);
+
+                connectedComponents.add(compoGraph);
+            }   
+        
+        return connectedComponents;
+        
     }
 
+    private void depthFirstComponent(T vertex, List<T> component, Set<T> marked){
+        marked.add(vertex);
+        component.add(vertex);
+        for(T curr : adjacencyList.get(vertex))
+            if(!marked.contains(curr))
+                depthFirstComponent(curr, component, marked);
+
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        for(T e : getVertices()){
+            sb.append(e + " -> ");
+            sb.append(adjacencyList.get(e));
+            sb.append("\n");
+        }
+        return sb.toString();
+    }
 
 
 

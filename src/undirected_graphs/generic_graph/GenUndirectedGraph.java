@@ -73,8 +73,8 @@ public interface GenUndirectedGraph<T> {
 
     /**
      * Gets the connected components of the graph.
-     * @return an Iterable collection of iterable collections, where each "sub-collection" represents a connected component.
+     * @return an Iterable collection of graphs, where each graph represents a connected component.
      */
-    Iterable<Iterable<T>> getConnectedComponents();
+    Iterable<GenUndirectedGraph<T>> getConnectedComponents();
 
 }

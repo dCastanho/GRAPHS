@@ -173,6 +173,8 @@ public class GenAdjacencyListGraph<T> implements GenUndirectedGraph<T> {
         
     }
 
+    //Uses depth search to find the connected component which the given vertex is in
+    //Pre-condition: vertex is in the graph
     private void depthFirstComponent(T vertex, List<T> component, Set<T> marked){
         marked.add(vertex);
         component.add(vertex);
@@ -192,6 +194,92 @@ public class GenAdjacencyListGraph<T> implements GenUndirectedGraph<T> {
         }
         return sb.toString();
     }
+
+    @Override
+    public T selfCycle() {
+        for(T vertex : getVertices()){
+            List<T> adjVertex = adjacencyList.get(vertex);
+            if(adjVertex.contains(vertex))
+                return vertex;
+        }
+        return null;
+    }
+
+    @Override
+    public Iterable<T> parallelEdge() {
+        for(T vertex : getVertices()){
+            List<T> adjVertex = adjacencyList.get(vertex);
+            T dup = hasDuplicate(adjVertex);
+            if(dup != null){
+                List<T> par = new ArrayList<>(2);
+                par.add(vertex);
+                par.add(dup);
+                return par;
+            }
+        }
+        return null;
+    }
+
+    //Checks if a list has duplicate entries of one of it's values, and returns one of them if it does, null if it doesn't
+    private T hasDuplicate(List<T> list){
+            int size = list.size();
+            for(int x = 0; x < size; x++){
+                T curr = list.get(x);
+                List<T> subList = list.subList(x+1, size);
+                if(subList.contains(curr))
+                    return curr;
+            }
+            return null;
+    }
+
+
+    @Override
+    public Iterable<T> getCycle() {
+        List<T> cycle = new LinkedList<>();
+
+        T selfLoop = selfCycle();
+        if(selfLoop != null){
+            cycle.add(selfLoop);
+            cycle.add(selfLoop);
+            return cycle;
+        } 
+
+        Iterable<T> parallel = parallelEdge();
+        if(parallel != null)
+            return parallel;
+
+        Set<T> marked = new HashSet<>();
+        Map<T,T> pathTo = new HashMap<>();
+        for(T v : getVertices()){
+            if(!marked.contains(v))
+                cycleDepthSearch(marked, pathTo, v, cycle, null);
+        }
+        return cycle;
+
+        
+    }
+
+    private void cycleDepthSearch(Set<T> marked, Map<T,T> pathTo, T source, List<T> cycle, T prev){
+        if(!cycle.isEmpty()) return;
+        marked.add(source);
+        for(T  curr : adjacencyList.get(source)){
+            if(!marked.contains(curr)){
+                pathTo.put(curr, source);
+                cycleDepthSearch(marked, pathTo, curr, cycle, source);
+            } else if(prev != null && !prev.equals(curr)){
+                T auxVertex = source;
+                while(auxVertex != curr){
+                    cycle.add(auxVertex);
+                    auxVertex = pathTo.get(auxVertex);
+                }
+                cycle.add(auxVertex);
+            }
+        }
+    }
+
+    
+
+    
 
 
 

@@ -77,4 +77,22 @@ public interface GenUndirectedGraph<T> {
      */
     Iterable<GenUndirectedGraph<T>> getConnectedComponents();
 
+    /**
+     * Finds a vertex with a self-cycle, if there is one
+     * @return the vertex with a self-cycle if there is one or {@code null} if there is none
+     */
+    T selfCycle();
+
+    /**
+     * Finds two vertices which have at least two parallel edges between them
+     * @return an Iterable with both of the vertices or {@code null} if there are no parallel edges
+     */
+    Iterable<T> parallelEdge();
+
+    /**
+     * Finds a cycle in the graph, if there is one. If there are several, nothing guarantees which one is returned.
+     * @return an Iterable with the vertices of the cycle, ordered accordingly or {@code null} if there is no cycle
+     */
+    Iterable<T> getCycle();
+
 }

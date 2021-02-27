@@ -1,8 +1,9 @@
-package undirected_graphs.generic_graph;
+package graph;
 
-import undirected_graphs.exceptions.NonexistentVertexException;
+import graph.exceptions.*;
 
-public interface GenUndirectedGraph<T> {
+public interface Graph<T> {
+
     
     /**
      * Adds a new vertex to the graph with no edges connected to it. Doesn't add if there is already an equal vertex, meaning, if there is
@@ -57,7 +58,7 @@ public interface GenUndirectedGraph<T> {
      * Finds a path between two given vertices if there is one, no guarantee it is the shortest path.
      * @param vertexOne one end of the path
      * @param vertexTwo the other end of the path
-     * @return an iterable collection which contains the path, it is ordered from {@code vertexTwo} to {@code vertexOne} or is {@code null} if there is no path
+     * @return an iterable collection which contains the path, it is ordered from {@code vertexOne} to {@code vertexTwo} or is {@code null} if there is no path
      * @throws NonexistentVertexException if either one of the vertices doesn't exist in the graph.
      */
     Iterable<T> getPath(T vertexOne, T vertexTwo) throws NonexistentVertexException;
@@ -66,7 +67,7 @@ public interface GenUndirectedGraph<T> {
      * Finds the shortest path between two given vertices, if there is one. 
      * @param vertexOne one end of the path
      * @param vertexTwo the other end of the path
-     * @return an iterable collection which contains the path, it is ordered from {@code vertexTwo} to {@code vertexOne} or is {@code null} if there is no path
+     * @return an iterable collection which contains the path, it is ordered from {@code vertexOne} to {@code vertexTwo} or is {@code null} if there is no path
      * @throws NonexistentVertexException
      */
     Iterable<T> getShortestPath(T vertexOne, T vertexTwo) throws NonexistentVertexException;
@@ -75,7 +76,7 @@ public interface GenUndirectedGraph<T> {
      * Gets the connected components of the graph.
      * @return an Iterable collection of graphs, where each graph represents a connected component.
      */
-    Iterable<GenUndirectedGraph<T>> getConnectedComponents();
+    Iterable<Graph<T>> getConnectedComponents();
 
     /**
      * Finds a vertex with a self-cycle, if there is one

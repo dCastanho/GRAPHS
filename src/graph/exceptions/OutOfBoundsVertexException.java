@@ -1,4 +1,4 @@
-package undirected_graphs.exceptions;
+package graph.exceptions;
 
 public class OutOfBoundsVertexException extends Exception{
 

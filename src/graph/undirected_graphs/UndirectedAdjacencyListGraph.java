@@ -6,14 +6,14 @@ import graph.*;
 import graph.exceptions.*;
 
 
-public class GenUndiAdjacencyListGraph<T> extends AbsAdjacencyListGraph<T>{
+public class UndirectedAdjacencyListGraph<T> extends AbsAdjacencyListGraph<T>{
 
 
-    public GenUndiAdjacencyListGraph(){
+    public UndirectedAdjacencyListGraph(){
         super();
     }
 
-    public GenUndiAdjacencyListGraph(Map<T,List<T>> aMap){
+    public UndirectedAdjacencyListGraph(Map<T,List<T>> aMap){
         super(aMap);
     }
 
@@ -43,7 +43,7 @@ public class GenUndiAdjacencyListGraph<T> extends AbsAdjacencyListGraph<T>{
                 Map<T,List<T>> graphMap = new HashMap<>(component.size());
                 for(T ele : component)
                     graphMap.put(ele, adjacencyList.get(ele));
-                Graph<T> compoGraph = new GenUndiAdjacencyListGraph<>(graphMap);
+                Graph<T> compoGraph = new UndirectedAdjacencyListGraph<>(graphMap);
 
                 connectedComponents.add(compoGraph);
             }   

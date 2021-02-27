@@ -2,7 +2,7 @@ package graph;
 
 import java.util.*;
 
-import graph.exceptions.*;
+import graph.exceptions.NonexistentVertexException;
 
 
 public abstract class AbsAdjacencyListGraph<T> implements Graph<T>{

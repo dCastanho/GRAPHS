@@ -6,6 +6,8 @@ import graph.exceptions.NonexistentVertexException;
 
 
 public abstract class AbsAdjacencyListGraph<T> implements Graph<T>{
+
+    //NOTE: No copies of vertexes are made, which means that even methods like getConnectedComponents return graphs whose vertices point to the actual objects, also stored in this graph and not copies of this.
     
     protected int nVertices;
     protected int nEdges;
@@ -65,7 +67,9 @@ public abstract class AbsAdjacencyListGraph<T> implements Graph<T>{
 
         Map<T,T> pathTo = new HashMap<>(nVertices);
         Set<T> marked = new HashSet<>(nVertices);
-        return depthFirstSearch(pathTo, vertexOne, vertexTwo, marked);
+        Stack<T> path = depthFirstSearch(pathTo, vertexOne, vertexTwo, marked);
+        return reversePath(path);
+         
     }
 
     //Pre-condition: Both vertices are in graph
@@ -75,13 +79,12 @@ public abstract class AbsAdjacencyListGraph<T> implements Graph<T>{
         for(T curr : adjacencyList.get(source)){
             if(!marked.contains(curr)){
                 pathTo.put(curr, source);
-                if(curr == goal)
+                if(curr.equals(goal))
                     return buildPath(pathTo, source, goal);
                 else{
                     Stack<T> path = depthFirstSearch(pathTo, curr, goal, marked);
                     if(path != null){
                         path.push(source);
-                        reversePath(path);
                         return path;
                     }
                 }
@@ -105,11 +108,12 @@ public abstract class AbsAdjacencyListGraph<T> implements Graph<T>{
     }
 
 
-    protected void reversePath(Stack<T> path) {
-        Stack<T> newPath = new Stack<T>();
-        while(!path.empty())
-            newPath.push(path.pop());
-            
+    protected Iterable<T> reversePath(Iterable<T> path) {
+        if(path == null) return null;
+        List<T> pList = new LinkedList<>();
+        for(T v : path)
+            pList.add(0, v);
+        return pList;
     }
 
     //Uses breadth first search which is why it is guaranteed to be the shortest
@@ -132,14 +136,13 @@ public abstract class AbsAdjacencyListGraph<T> implements Graph<T>{
             for(T n : adjacencyList.get(curr)){
                 pathTo.put(n, curr);
                 marked.add(n);
-                if(n == vertexTwo)
+                if(n.equals(vertexTwo))
                     path = buildPath(pathTo, vertexOne, vertexTwo);
                 else if(!marked.contains(n))
                     queue.add(n);
             }
         }
-        reversePath(path);
-        return path;
+        return reversePath(path);
     }
 
     //Uses depth search to find the connected component which the given vertex is in
@@ -202,49 +205,9 @@ public abstract class AbsAdjacencyListGraph<T> implements Graph<T>{
     }
 
 
-    
-    public Iterable<T> getCycle() {
-        List<T> cycle = new LinkedList<>();
 
-        T selfLoop = selfCycle();
-        if(selfLoop != null){
-            cycle.add(selfLoop);
-            cycle.add(selfLoop);
-            return cycle;
-        } 
 
-        Iterable<T> parallel = parallelEdge();
-        if(parallel != null)
-            return parallel;
 
-        Set<T> marked = new HashSet<>();
-        Map<T,T> pathTo = new HashMap<>();
-        for(T v : getVertices()){
-            if(!marked.contains(v))
-                cycleDepthSearch(marked, pathTo, v, cycle, null);
-        }
-        return cycle;
-
-        
-    }
-
-    protected void cycleDepthSearch(Set<T> marked, Map<T,T> pathTo, T source, List<T> cycle, T prev){
-        if(!cycle.isEmpty()) return;
-        marked.add(source);
-        for(T  curr : adjacencyList.get(source)){
-            if(!marked.contains(curr)){
-                pathTo.put(curr, source);
-                cycleDepthSearch(marked, pathTo, curr, cycle, source);
-            } else if(prev != null && !prev.equals(curr)){
-                T auxVertex = source;
-                while(auxVertex != curr){
-                    cycle.add(auxVertex);
-                    auxVertex = pathTo.get(auxVertex);
-                }
-                cycle.add(auxVertex);
-            }
-        }
-    }
 
     
 

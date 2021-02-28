@@ -51,7 +51,47 @@ public class UndirectedAdjacencyListGraph<T> extends AbsAdjacencyListGraph<T>{
         return connectedComponents;
         
     }
+
+    public Iterable<T> getCycle() {
+        Stack<T> cycle = new Stack<>();
+
+        T selfLoop = selfCycle();
+        if(selfLoop != null){
+            cycle.add(selfLoop);
+            cycle.add(selfLoop);
+            return cycle;
+        } 
+
+        Iterable<T> parallel = parallelEdge();
+        if(parallel != null)
+            return parallel;
+
+        Set<T> marked = new HashSet<>();
+        Map<T,T> pathTo = new HashMap<>();
+        for(T v : getVertices()){
+            if(!marked.contains(v))
+                cycleDepthSearch(marked, pathTo, v, cycle, null);
+        }
+        return reversePath(cycle);
+    }
     
+    private void cycleDepthSearch(Set<T> marked, Map<T,T> pathTo, T source, Stack<T> cycle, T prev){
+        if(!cycle.isEmpty()) return;
+        marked.add(source);
+        for(T  curr : adjacencyList.get(source)){
+            if(!marked.contains(curr)){
+                pathTo.put(curr, source);
+                cycleDepthSearch(marked, pathTo, curr, cycle, source);
+            } else if(prev != null && !prev.equals(curr)){
+                T auxVertex = source;
+                while(auxVertex != curr){
+                    cycle.push(auxVertex);
+                    auxVertex = pathTo.get(auxVertex);
+                }
+                cycle.push(auxVertex);
+            }
+        }
+    }
 
     
 

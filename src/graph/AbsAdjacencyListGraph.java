@@ -22,8 +22,11 @@ public abstract class AbsAdjacencyListGraph<T> implements Graph<T>{
 
 
     public AbsAdjacencyListGraph(Map<T,List<T>> aMap){
-        nVertices = 0;
+        Set<T> keys = aMap.keySet();
+        nVertices = keys.size();
         nEdges = 0;
+        for(T key : keys)
+            nEdges += aMap.get(key).size();
         adjacencyList = aMap;
     }
 
